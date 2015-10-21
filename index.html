@@ -20,53 +20,67 @@
     <link href="http://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
 
 
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript">
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css' rel='stylesheet'/>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css' rel='stylesheet'
+          media='print'/>
 
-            // Load the Visualization API and the piechart package.
-            google.load('visualization', '1', {'packages':['corechart', 'table', 'timeline']});
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scrolling-nav.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/lang/ru.js'></script>
+    <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+    <script type="text/javascript">
 
-            // Set a callback to run when the Google Visualization API is loaded.
-            google.setOnLoadCallback(drawChart);
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1', {'packages': ['corechart', 'table', 'timeline']});
 
-            function drawChart() {
-                var data = google.visualization.arrayToDataTable([
-                    ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
-                        'Western', 'Literature', { role: 'annotation' } ],
-                    ['2010', 10, 24, 20, 32, 18, 5, ''],
-                    ['2020', 16, 22, 23, 30, 16, 9, ''],
-                    ['2030', 28, 19, 29, 30, 12, 13, '']
-                ]);
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.setOnLoadCallback(drawChart);
 
-                var options = {
-                    width: 600,
-                    height: 400,
-                    legend: { position: 'top', maxLines: 3 },
-                    bar: { groupWidth: '75%' },
-                    isStacked: true
-                };
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
+                    'Western', 'Literature', {role: 'annotation'}],
+                ['2010', 10, 24, 20, 32, 18, 5, ''],
+                ['2020', 16, 22, 23, 30, 16, 9, ''],
+                ['2030', 28, 19, 29, 30, 12, 13, '']
+            ]);
 
-
-                // Instantiate and draw our chart, passing in some options.
-                var table_chart = new google.visualization.Table(document.getElementById('table-chart'));
-                table_chart.draw(data, options);
-
-                var bar_chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
-                bar_chart.draw(data, options);
-
-                var pie_chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
-                pie_chart.draw(data, options);
-
-                var area_chart = new google.visualization.SteppedAreaChart(document.getElementById('area-chart'));
-                area_chart.draw(data, options);
-            }
+            var options = {
+                width: 600,
+                height: 400,
+                legend: {position: 'top', maxLines: 3},
+                bar: {groupWidth: '75%'},
+                isStacked: true
+            };
 
 
+            // Instantiate and draw our chart, passing in some options.
+            var table_chart = new google.visualization.Table(document.getElementById('table-chart'));
+            table_chart.draw(data, options);
 
-        </script>
+            var bar_chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
+            bar_chart.draw(data, options);
 
+            var pie_chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
+            pie_chart.draw(data, options);
+
+            var area_chart = new google.visualization.SteppedAreaChart(document.getElementById('area-chart'));
+            area_chart.draw(data, options);
+        }
+
+
+    </script>
+    <style>
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
 
 </head>
 
@@ -74,107 +88,120 @@
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Dashboard</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav">
-                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
-                    <li class="hidden">
-                        <a class="page-scroll" href="#page-top"></a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#bar">Bar</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#pie">Pie</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#area">Area</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="#page-top">Dashboard</a>
         </div>
-        <!-- /.container -->
-    </nav>
 
-    <!-- Intro Section -->
-    <section id="intro" class="intro-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Table</h1>
-                    <div id="table-chart"></div>
-                </div>
-            </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                <li class="hidden">
+                    <a class="page-scroll" href="#page-top"></a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#bar">Bar</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#pie">Pie</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="#area">Area</a>
+                </li>
+            </ul>
         </div>
-    </section>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
 
-    <!-- About Section -->
-    <section id="bar" class="about-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Bar Chart</h1>
-                    <div id="bar-chart"></div>
-                </div>
+<!-- Intro Section -->
+<section id="intro" class="intro-section">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div id='calendar'></div>
+                <h1>Table</h1>
+
+                <div id="table-chart"></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Services Section -->
-    <section id="pie" class="services-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Pie Chart</h1>
-                    <div id="pie-chart"></div>
-                </div>
+<!-- About Section -->
+<section id="bar" class="about-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Bar Chart</h1>
+
+                <div id="bar-chart"></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Contact Section -->
-    <section id="area" class="contact-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Area Chart</h1>
-                    <div id="area-chart"></div>
-                </div>
+<!-- Services Section -->
+<section id="pie" class="services-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Pie Chart</h1>
+
+                <div id="pie-chart"></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+<!-- Contact Section -->
+<section id="area" class="contact-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Area Chart</h1>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+                <div id="area-chart"></div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <!-- Scrolling Nav JavaScript -->
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/scrolling-nav.js"></script>
-    <script>
-        $(function() {
-            $.ajax({
-                url: "/getData.php",
-                dataType: 'json'
-            });
+<script>
+    $(function () {
+        $('#calendar').fullCalendar({
+            firstDay: 1,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,basicWeek,basicDay'
+            },
+            lang: 'ru',
+
         });
-    </script>
+
+        $('.fc-view-container').remove();
+
+
+        $('.fc-button').click(function(){
+            var view = $('#calendar').fullCalendar('getView');
+            console.log(+view.intervalStart._d / 1000);
+            console.log(+view.intervalEnd._d / 1000);
+        });
+
+    });
+</script>
 
 </body>
 
