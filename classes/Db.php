@@ -16,7 +16,7 @@ class Db
     {
         $sth = $this->dbh->prepare($sql);
         $sth->execute($params);
-        $res = ($sth->fetchAll(PDO::FETCH_OBJ));
+        $res = ($sth->fetchAll(PDO::FETCH_ASSOC));
         return $res;
     }
 
