@@ -40,26 +40,31 @@
 
         // Set a callback to run when the Google Visualization API is loaded.
         google.setOnLoadCallback(drawChart);
+        var arrData = [];
+        arrData[0] =  ['contact_id', 'development', 'support', 'marketing', 'documents', 'negotiations'];
+
+        $.get(
+                '/getData.php', {}, function (response) {
+                    for (var key in response) {
+                        var arrStr = [];
+                        arrStr[0] = key;
+                        arrStr[1] = +response[key][0];
+                        arrStr[2] = +response[key][1];
+                        arrStr[3] = +response[key][2];
+                        arrStr[4] = +response[key][3];
+                        arrStr[5] = +response[key][4];
+                        arrData.push(arrStr);
+                    }
+
+
+
+
+                }, 'json'
+        );
+
 
         function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-                ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
-                    'Western', 'Literature', {role: 'annotation'}],
-                ['2010', 10, 24, 20, 32, 18, 5, ''],
-                ['2020', 16, 22, 23, 30, 16, 9, ''],
-                ['2030', 28, 19, 29, 30, 12, 13, '']
-            ]);
-
-//            var data = google.visualization.arrayToDataTable([
-//                ['action', 'development', 'support', 'marketing', 'documents', 'negotiations', {role: 'annotation'}],
-//                [contact_id, duration, duration, duration, duration, duration, duration, ''],
-//                [contact_id, 16, 22, 23, 30, 16, 9, ''],
-//                [contact_id, 28, 19, 29, 30, 12, 13, '']
-//            ]);
-
-//            var arrData = [];
-//            arrData[0] = ['development', 'support', 'marketing', 'documents', 'negotiations', {role: 'annotation'}];
-
+            var data = new google.visualization.arrayToDataTable(arrData, false);
 
             var options = {
                 width: 600,
@@ -84,7 +89,7 @@
             area_chart.draw(data, options);
         }
 
-
+        //        });
     </script>
     <style>
         #calendar {
@@ -192,30 +197,30 @@
 <script>
     $(function () {
         $.get(
-            '/getData.php', {}, function() {
+                '/getData.php', {}, function () {
 
                 }, 'json'
-    );
+        );
 
-    $('#calendar').fullCalendar({
-        firstDay: 1,
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,basicWeek,basicDay'
-        },
-        lang: 'ru',
+        $('#calendar').fullCalendar({
+            firstDay: 1,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,basicWeek,basicDay'
+            },
+            lang: 'ru',
 
-    });
+        });
 
-    $('.fc-view-container').remove();
+        $('.fc-view-container').remove();
 
 
-    $('.fc-button').click(function () {
-        var view = $('#calendar').fullCalendar('getView');
-        console.log(+view.intervalStart._d / 1000);
-        console.log(+view.intervalEnd._d / 1000);
-    });
+        $('.fc-button').click(function () {
+            var view = $('#calendar').fullCalendar('getView');
+            console.log(+view.intervalStart._d / 1000);
+            console.log(+view.intervalEnd._d / 1000);
+        });
 
     })
     ;
