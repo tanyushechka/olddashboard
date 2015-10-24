@@ -47,21 +47,26 @@
             switch (chartType) {
                 case 'bar' :
                     chart = new google.visualization.BarChart(document.getElementById('div-chart'));
-                    chart.draw(data, options);
                     break;
                 case 'column' :
                     chart = new google.visualization.ColumnChart(document.getElementById('div-chart'));
-                    chart.draw(data, options);
                     break;
                 case 'area' :
                     chart = new google.visualization.SteppedAreaChart(document.getElementById('div-chart'));
-                    chart.draw(data, options);
+                    break;
+                case 'pie' :
+                    chart = new google.visualization.PieChart(document.getElementById('div-chart'));
+                    break;
+                case 'table' :
+                    chart = new google.visualization.Table(document.getElementById('div-chart'));
                     break;
                 default :
-                    chart = new google.visualization.BarChart(document.getElementById('div-chart'));
-                    chart.draw(data, options);
+                    chart = new google.visualization.Table(document.getElementById('div-chart'));
                     break;
             }
+            chart.draw(data, options);
+//            $('#div-chart').css('width', $('table').css('width'));
+//            $('#div-chart').css('margin', '0 auto');
 
         }
 
@@ -85,12 +90,6 @@
                         }
                         data = new google.visualization.arrayToDataTable(arrData, false);
 
-                        var table_chart = new google.visualization.Table(document.getElementById('table-chart'));
-                        table_chart.draw(data, options);
-
-                        var pie_chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
-                        pie_chart.draw(data, options);
-
                         drowChart();
 
                     }, 'json'
@@ -104,16 +103,14 @@
     <style>
 
         body {
-            background-color: #eee;
+            /*background-color: #eee;*/
         }
 
         section {
-            margin-top: 100px;
+            margin-top: 80px;
         }
 
-        .col-md-12,
-        .col-md-6 {
-            /*margin-bottom: 30px;*/
+        .col-md-12 {
             margin: 0 auto;
         }
 
@@ -124,21 +121,13 @@
         }
 
         #calend {
-            background-color: #71B7DA;
-            background-color: #a4a4a4;
+            background-color: #337ab7;
             height: 70px;
             color: #ffffff;
             position: fixed;
             top: 0;
             z-index: 100;
             width: 100%;
-        }
-
-        #table-chart,
-        #pie-chart {
-            /*min-width: 500px;*/
-            /*margin: 0 auto;*/
-            min-height: 400px;
         }
 
         #div-chart {
@@ -164,33 +153,21 @@
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <div id="table-chart"></div>
-            </div>
-            <div class="col-md-6">
-                <div id="pie-chart"></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section>
-    <div class="container">
-        <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                            <div class="btn-group" role="group">
-                                <button id="button-bar" class="btn btn-primary" type="button">Bar</button>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <button id="button-column" class="btn btn-warning" type="button">Column</button>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <button id="button-area" class="btn btn-danger" type="button">Area</button>
-                            </div>
-                        </div>
+                        <ul class="nav nav-tabs nav-justified">
+                            <li role="presentation" class="active"><a id="tab-employee" data-toggle="tab">По
+                                сотруднику</a></li>
+                            <li role="presentation"><a id="tab-action" data-toggle="tab">По действию</a></li>
+                        </ul>
+                        <ul class="nav nav-pills nav-justified">
+                            <li role="presentation" class="active"><a id="pill-bar" data-toggle="pill">Bar</a></li>
+                            <li role="presentation"><a id="pill-column" data-toggle="pill">Column</a></li>
+                            <li role="presentation"><a id="pill-area" data-toggle="pill">Area</a></li>
+                            <li role="presentation"><a id="pill-pie" data-toggle="pill">Pie</a></li>
+                            <li role="presentation"><a id="pill-table" data-toggle="pill">Table</a></li>
+                        </ul>
                     </div>
                     <div class="panel-body">
                         <div id="div-chart"></div>
@@ -226,18 +203,32 @@
             drawAllCharts();
         });
 
-        $('#button-bar').click(function () {
-            chartType = 'bar';
-            drowChart();
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            alert($(e.target).attr('id'));
+
         });
 
-        $('#button-column').click(function () {
-            chartType = 'column';
-            drowChart();
-        });
-
-        $('#button-area').click(function () {
-            chartType = 'area';
+        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+            switch ($(e.target).attr('id')) {
+                case 'pill-bar' :
+                    chartType = 'bar';
+                    break;
+                case 'pill-column' :
+                    chartType = 'column';
+                    break;
+                case 'pill-area' :
+                    chartType = 'area';
+                    break;
+                case 'pill-pie' :
+                    chartType = 'pie';
+                    break;
+                case 'pill-table' :
+                    chartType = 'table';
+                    break;
+                default :
+                    chartType = 'table';
+                    break;
+            }
             drowChart();
         });
 
