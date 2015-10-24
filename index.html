@@ -11,80 +11,101 @@
 
     <title>Dashboard</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-
-    <!-- Custom CSS -->
-    <link href="css/scrolling-nav.css" rel="stylesheet">
-    <link href="http://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
-
-
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css' rel='stylesheet'/>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css' rel='stylesheet'
           media='print'/>
 
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/scrolling-nav.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/lang/ru.js'></script>
-    <script src="https://www.google.com/jsapi" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="https://www.google.com/jsapi"></script>
 
-        // Load the Visualization API and the piechart package.
+    <script>
         google.load('visualization', '1', {'packages': ['corechart', 'table', 'timeline']});
-
-        // Set a callback to run when the Google Visualization API is loaded.
         google.setOnLoadCallback(drawChart);
-        var arrData = [];
-        arrData[0] =  ['contact_id', 'development', 'support', 'marketing', 'documents', 'negotiations'];
 
-        $.get(
-                '/getData.php', {}, function (response) {
-                    for (var key in response) {
-                        arrData.push([key, +response[key][0], +response[key][1], +response[key][2],
-                                +response[key][3], +response[key][4]]);
-                    }
-                }, 'json'
-        );
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear() - 1;
+        var monthNext = (month == 12) ? 1 : month + 1;
+        var yearNext = (month == 12) ? year + 1 : year;
+        var intervalStart = new Date(year, month, 1, 0, 0, 0, 0).valueOf() / 1000;
+        var intervalEnd = new Date(yearNext, monthNext, 1, 0, 0, 0, 0).valueOf() / 1000;
+        //        console.log(intervalStart + '   ' + intervalEnd);
 
 
         function drawChart() {
-            var data = new google.visualization.arrayToDataTable(arrData, false);
-
             var options = {
-//                width: 1000,
-                height: 700,
+//                height: 700,
+//                width: 800,
                 legend: {position: 'top', maxLines: 3},
-                bar: {groupWidth: '75%'},
+//                bar: {groupWidth: '75%'},
                 isStacked: true
             };
+            var arrData = [];
+            arrData[0] = ['contact_id', 'development', 'support', 'marketing', 'documents', 'negotiations'];
+            $.get(
+                    '/getData.php', {start: intervalStart, end: intervalEnd}, function (response) {
+                        for (var key in response) {
+                            var arrStr = [];
+                            arrStr[0] = key;
+                            for (var i = 0; i <= 4; i++) {
+                                var curVal = +response[key][i];
+                                if (isNaN(curVal)) {
+                                    curVal = 0;
+                                }
+                                arrStr.push(curVal);
+                            }
+                            arrData.push(arrStr);
+                        }
+                        var data = new google.visualization.arrayToDataTable(arrData, false);
+                        var table_chart = new google.visualization.Table(document.getElementById('table-chart'));
+                        table_chart.draw(data, options);
+
+                        var bar_chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
+                        bar_chart.draw(data, options);
+
+                        var pie_chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
+                        pie_chart.draw(data, options);
+
+                        var area_chart = new google.visualization.SteppedAreaChart(document.getElementById('area-chart'));
+                        area_chart.draw(data, options);
+
+                    }, 'json'
+            );
 
 
-            // Instantiate and draw our chart, passing in some options.
-            var table_chart = new google.visualization.Table(document.getElementById('table-chart'));
-            table_chart.draw(data, options);
-
-            var bar_chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
-            bar_chart.draw(data, options);
-
-            var pie_chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
-            pie_chart.draw(data, options);
-
-            var area_chart = new google.visualization.SteppedAreaChart(document.getElementById('area-chart'));
-            area_chart.draw(data, options);
         }
 
-        //        });
+
     </script>
     <style>
+
         #calendar {
-            max-width: 900px;
+            max-width: 800px;
+            height: 30px;
+            margin: 70px auto 50px auto;
+        }
+
+        /*#calend{*/
+            /*margin-top: 120px;*/
+        /*}*/
+
+        #table-chart,
+        #bar-chart,
+        #pie-chart,
+        #area-chart {
+            min-width: 600px;
             margin: 0 auto;
+            min-height: 300px;
+            /*width: 800px;*/
+        }
+
+        #pie-chart svg g rect{
+            width: 300px;
         }
     </style>
 
@@ -131,53 +152,49 @@
 </nav>
 
 <!-- Intro Section -->
-<section id="intro" class="intro-section">
-
+<section id="calend">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div id='calendar'></div>
-                <h1>Table</h1>
+            </div>
+        </div>
+    </div>
+</section>
 
+<section id="table">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!--<h3>Table</h3>-->
                 <div id="table-chart"></div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- About Section -->
-<section id="bar" class="about-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Bar Chart</h1>
-
-                <div id="bar-chart"></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Services Section -->
-<section id="pie" class="services-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Pie Chart</h1>
-
+            <div class="col-md-6">
+                <!--<h3>Pie Chart</h3>-->
                 <div id="pie-chart"></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Contact Section -->
+
+<section id="bar" class="services-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--<h3>Bar Chart</h3>-->
+                <div id="bar-chart"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 <section id="area" class="contact-section">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Area Chart</h1>
-
+                <!--<h3>Area Chart</h3>-->
                 <div id="area-chart"></div>
             </div>
         </div>
@@ -186,11 +203,6 @@
 
 <script>
     $(function () {
-        $.get(
-                '/getData.php', {}, function () {
-
-                }, 'json'
-        );
 
         $('#calendar').fullCalendar({
             firstDay: 1,
@@ -199,21 +211,18 @@
                 center: 'title',
                 right: 'month,basicWeek,basicDay'
             },
-            lang: 'ru',
-
+            lang: 'ru'
         });
 
         $('.fc-view-container').remove();
 
-
         $('.fc-button').click(function () {
             var view = $('#calendar').fullCalendar('getView');
-            console.log(+view.intervalStart._d / 1000);
-            console.log(+view.intervalEnd._d / 1000);
+            intervalStart = +view.intervalStart._d / 1000 - 31536000;
+            intervalEnd = +view.intervalEnd._d / 1000 - 31536000;
+            drawChart();
         });
-
-    })
-    ;
+    });
 
 
 </script>
