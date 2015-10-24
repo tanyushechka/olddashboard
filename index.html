@@ -35,6 +35,7 @@
         var intervalStart = new Date(year, month, 1, 0, 0, 0, 0).valueOf() / 1000;
         var intervalEnd = new Date(yearNext, monthNext, 1, 0, 0, 0, 0).valueOf() / 1000;
         var chartType = 'bar';
+        var dataSlice = 'employee';
         var data = null;
         var options = {
             legend: {position: 'top', maxLines: 3},
@@ -69,14 +70,16 @@
 
         function drawChartsByEmployee() {
             var arrData = [];
+            var arrStr = [];
+            var curVal;
             arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
             $.get(
                     '/getDataByEmployee.php', {start: intervalStart, end: intervalEnd}, function (response) {
                         for (var key in response) {
-                            var arrStr = [];
+                            arrStr = [];
                             arrStr[0] = key;
                             for (var i = 0; i <= 4; i++) {
-                                var curVal = +response[key][i];
+                                curVal = +response[key][i];
                                 if (isNaN(curVal)) {
                                     curVal = 0;
                                 }
@@ -92,21 +95,38 @@
 
         function drawChartsByAction() {
             var arrData = [];
-            arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
+            var curAction;
+            var curVal;
+            arrData[0] = ['action', 'value'];
             $.get(
-                    '/getData.php', {start: intervalStart, end: intervalEnd}, function (response) {
-                        for (var key in response) {
-                            var arrStr = [];
-                            arrStr[0] = key;
+                    '/getDataByAction.php', {start: intervalStart, end: intervalEnd}, function (response) {
                             for (var i = 0; i <= 4; i++) {
-                                var curVal = +response[key][i];
+                                switch (+response[i].action) {
+                                    case 0 :
+                                        curAction = 'development';
+                                        break;
+                                    case 1 :
+                                        curAction = 'support';
+                                        break;
+                                    case 2 :
+                                        curAction = 'marketing';
+                                        break;
+                                    case 3 :
+                                        curAction = 'documents';
+                                        break;
+                                    case 4 :
+                                        curAction = 'negotiations';
+                                        break;
+                                    default :
+                                        curAction = 'others';
+                                        break;
+                                }
+                                curVal = +response[i].val;
                                 if (isNaN(curVal)) {
                                     curVal = 0;
                                 }
-                                arrStr.push(curVal);
+                                arrData.push([curAction, curVal]);
                             }
-                            arrData.push(arrStr);
-                        }
                         data = new google.visualization.arrayToDataTable(arrData, false);
                         drowChart();
                     }, 'json'
@@ -208,18 +228,33 @@
             var view = $('#calendar').fullCalendar('getView');
             intervalStart = +view.intervalStart._d / 1000 - 31536000;
             intervalEnd = +view.intervalEnd._d / 1000 - 31536000;
-            drawChartsByEmployee();
+            switch (dataSlice) {
+                case 'employee' :
+                    drawChartsByEmployee();
+                    break;
+                case 'action' :
+                    drawChartsByAction();
+                    break;
+                default :
+                    drawChartsByEmployee();
+                    break;
+
+            }
+
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             switch ($(e.target).attr('id')) {
                 case 'tab-employee' :
+                    dataSlice = 'employee';
                     drawChartsByEmployee();
                     break;
                 case 'tab-action' :
+                    dataSlice = 'action';
                     drawChartsByAction();
                     break;
                 default :
+                    dataSlice = 'employee';
                     drawChartsByEmployee();
                     break;
             }

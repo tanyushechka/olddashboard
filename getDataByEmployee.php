@@ -2,7 +2,6 @@
 require_once __DIR__ . '/classes/Db.php';
 
 $arrResult = [];
-$arrActivities = ['development', 'support', 'marketing', 'documents', 'negotiations'];
 $db = new Db();
 
 $sql = 'SELECT `employee_id`, SUM(`duration`) `val` FROM `activities`
