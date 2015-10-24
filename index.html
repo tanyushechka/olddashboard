@@ -68,7 +68,7 @@
         function drawAllCharts() {
 
             var arrData = [];
-            arrData[0] = ['contact_id', 'development', 'support', 'marketing', 'documents', 'negotiations'];
+            arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
             $.get(
                     '/getData.php', {start: intervalStart, end: intervalEnd}, function (response) {
                         for (var key in response) {
