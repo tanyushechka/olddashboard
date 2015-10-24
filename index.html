@@ -25,7 +25,7 @@
 
     <script>
         google.load('visualization', '1', {'packages': ['corechart', 'table', 'timeline']});
-        google.setOnLoadCallback(drawAllCharts);
+        google.setOnLoadCallback(drawChartsByEmployee);
 
         var date = new Date();
         var month = date.getMonth() + 1;
@@ -65,13 +65,32 @@
                     break;
             }
             chart.draw(data, options);
-//            $('#div-chart').css('width', $('table').css('width'));
-//            $('#div-chart').css('margin', '0 auto');
-
         }
 
-        function drawAllCharts() {
+        function drawChartsByEmployee() {
+            var arrData = [];
+            arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
+            $.get(
+                    '/getDataByEmployee.php', {start: intervalStart, end: intervalEnd}, function (response) {
+                        for (var key in response) {
+                            var arrStr = [];
+                            arrStr[0] = key;
+                            for (var i = 0; i <= 4; i++) {
+                                var curVal = +response[key][i];
+                                if (isNaN(curVal)) {
+                                    curVal = 0;
+                                }
+                                arrStr.push(curVal);
+                            }
+                            arrData.push(arrStr);
+                        }
+                        data = new google.visualization.arrayToDataTable(arrData, false);
+                        drowChart();
+                    }, 'json'
+            );
+        }
 
+        function drawChartsByAction() {
             var arrData = [];
             arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
             $.get(
@@ -89,23 +108,14 @@
                             arrData.push(arrStr);
                         }
                         data = new google.visualization.arrayToDataTable(arrData, false);
-
                         drowChart();
-
                     }, 'json'
             );
-
-
         }
 
 
     </script>
     <style>
-
-        body {
-            /*background-color: #eee;*/
-        }
-
         section {
             margin-top: 80px;
         }
@@ -182,8 +192,6 @@
 <script>
     $(function () {
 
-        console.log(intervalStart + '    ' + intervalEnd);
-
         $('#calendar').fullCalendar({
             firstDay: 1,
             header: {
@@ -200,12 +208,21 @@
             var view = $('#calendar').fullCalendar('getView');
             intervalStart = +view.intervalStart._d / 1000 - 31536000;
             intervalEnd = +view.intervalEnd._d / 1000 - 31536000;
-            drawAllCharts();
+            drawChartsByEmployee();
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            alert($(e.target).attr('id'));
-
+            switch ($(e.target).attr('id')) {
+                case 'tab-employee' :
+                    drawChartsByEmployee();
+                    break;
+                case 'tab-action' :
+                    drawChartsByAction();
+                    break;
+                default :
+                    drawChartsByEmployee();
+                    break;
+            }
         });
 
         $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
