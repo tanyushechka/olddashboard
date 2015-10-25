@@ -72,63 +72,42 @@
             var arrData = [];
             var arrStr = [];
             var curVal;
-            arrData[0] = ['employee', 'development', 'support', 'marketing', 'documents', 'negotiations'];
             $.get(
                     '/getDataByEmployee.php', {start: intervalStart, end: intervalEnd}, function (response) {
-                        for (var key in response) {
-                            arrStr = [];
-                            arrStr[0] = key;
-                            for (var i = 0; i <= 4; i++) {
-                                curVal = +response[key][i];
-                                if (isNaN(curVal)) {
-                                    curVal = 0;
+                        if (!($.isEmptyObject(response))) {
+                            arrData[0] = ['employee', 'development', 'documents', 'marketing', 'negotiations', 'support'];
+                            for (var key in response) {
+                                arrStr = [];
+                                arrStr[0] = key;
+                                for (var i = 1; i <= (arrData[0].length - 1); i++) {
+                                    curVal = +response[key][arrData[0][i]];
+                                    if (isNaN(curVal)) {
+                                        curVal = 0;
+                                    }
+                                    arrStr.push(curVal);
                                 }
-                                arrStr.push(curVal);
+                                arrData.push(arrStr);
                             }
-                            arrData.push(arrStr);
+                            data = new google.visualization.arrayToDataTable(arrData, false);
+                            drowChart();
                         }
-                        data = new google.visualization.arrayToDataTable(arrData, false);
-                        drowChart();
                     }, 'json'
             );
         }
 
         function drawChartsByAction() {
             var arrData = [];
-            var curAction;
-            var curVal;
-            arrData[0] = ['action', 'value'];
+
             $.get(
                     '/getDataByAction.php', {start: intervalStart, end: intervalEnd}, function (response) {
-                            for (var i = 0; i <= 4; i++) {
-                                switch (+response[i].action_id) {
-                                    case 0 :
-                                        curAction = 'development';
-                                        break;
-                                    case 1 :
-                                        curAction = 'support';
-                                        break;
-                                    case 2 :
-                                        curAction = 'marketing';
-                                        break;
-                                    case 3 :
-                                        curAction = 'documents';
-                                        break;
-                                    case 4 :
-                                        curAction = 'negotiations';
-                                        break;
-                                    default :
-                                        curAction = 'others';
-                                        break;
-                                }
-                                curVal = +response[i].val;
-                                if (isNaN(curVal)) {
-                                    curVal = 0;
-                                }
-                                arrData.push([curAction, curVal]);
-                            }
-                        data = new google.visualization.arrayToDataTable(arrData, false);
-                        drowChart();
+                        if (response.length > 0) {
+                            arrData[0] = ['action', 'value'];
+                            response.forEach(function (item) {
+                                arrData.push([item.action, +item.val]);
+                            });
+                            data = new google.visualization.arrayToDataTable(arrData, false);
+                            drowChart();
+                        }
                     }, 'json'
             );
         }
@@ -228,6 +207,7 @@
             var view = $('#calendar').fullCalendar('getView');
             intervalStart = +view.intervalStart._d / 1000 - 31536000;
             intervalEnd = +view.intervalEnd._d / 1000 - 31536000;
+            $('#div-chart').empty();
             switch (dataSlice) {
                 case 'employee' :
                     drawChartsByEmployee();
@@ -244,6 +224,7 @@
         });
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $('#div-chart').empty();
             switch ($(e.target).attr('id')) {
                 case 'tab-employee' :
                     dataSlice = 'employee';
@@ -261,6 +242,7 @@
         });
 
         $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+            $('#div-chart').empty();
             switch ($(e.target).attr('id')) {
                 case 'pill-bar' :
                     chartType = 'bar';
