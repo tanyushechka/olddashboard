@@ -101,7 +101,7 @@
             $.get(
                     '/getDataByAction.php', {start: intervalStart, end: intervalEnd}, function (response) {
                             for (var i = 0; i <= 4; i++) {
-                                switch (+response[i].action) {
+                                switch (+response[i].action_id) {
                                     case 0 :
                                         curAction = 'development';
                                         break;
