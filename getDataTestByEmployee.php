@@ -16,20 +16,26 @@ $sql = 'SELECT a.employee_id, CONCAT_WS(\'  \', c.first_name, c.last_name) emplo
         FROM activities a, contacts c
         WHERE a.employee_id <> \'\' AND a.employee_id = c.id AND a.created_at BETWEEN :start AND :end
         GROUP BY 1 ORDER BY 3 DESC';
-$values1 = $db->dbSelect($sql, [':start' => $_GET['start'], ':end' => $_GET['end']]);
+$employees = $db->dbSelect($sql, [':start' => $_GET['start'], ':end' => $_GET['end']]);
 
-foreach ($values1 as $value1) {
+foreach ($employees as $employee) {
     $arrC = [];
-    $arrC[0] = ['v' => $value1->employee];
-    $sql = 'SELECT `action_id`, SUM(`duration`) `val`
+    $arrC[0] = ['v' => $employee->employee];
+    foreach ($actions as $action) {
+        $sql = 'SELECT `action`, SUM(`duration`) `val`
             FROM `activities`
-            WHERE `employee_id` = :id and `created_at` BETWEEN :start AND :end
-            GROUP BY 1 ORDER BY 1';
-    $values2 = $db->dbSelect($sql, [':id' => $value1->employee_id, ':start' => $_GET['start'], ':end' => $_GET['end']]);
-    foreach ($values2 as $value2) {
-        array_push($arrC, ['v' => $value2->val]);
+            WHERE `employee_id` = :id AND action = :action AND `created_at` BETWEEN :start AND :end
+            GROUP BY 1';
+        $values = $db->dbSelect($sql, [':id' => $employee->employee_id, ':action' => $action->action,
+            ':start' => $_GET['start'], ':end' => $_GET['end']])[0];
+        if (!empty($values)) {
+            array_push($arrC, ['v' => $values->val]);
+        } else {
+            array_push($arrC, ['v' => 0]);
+        }
     }
     array_push($arrResult['rows'], ['c' => $arrC]);
+
 }
 
 echo json_encode($arrResult, JSON_UNESCAPED_UNICODE);
