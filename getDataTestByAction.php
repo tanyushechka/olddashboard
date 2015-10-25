@@ -8,9 +8,9 @@ $arrResult['cols'] = [
     ['label' => 'value', 'type' => 'number']
 ];
 
-$sql = 'SELECT a2.action , SUM(a1.duration) val FROM activities a1, actions a2
-        WHERE a1.created_at BETWEEN :start AND :end AND a1.action_id = a2.id
-        GROUP BY 1 ORDER BY 2 DESC';
+$sql = 'SELECT action , SUM(duration) val FROM activities
+        WHERE created_at BETWEEN :start AND :end
+        GROUP BY 1 ORDER BY 1';
 $values = $db->dbSelect($sql, [':start' => $_GET['start'], ':end' => $_GET['end']]);
 
 foreach ($values as $key => $value) {
