@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/classes/Db.php';
+require_once __DIR__ . '/db/Db.php';
 
 
 $arrActivities = ['development', 'support', 'marketing', 'documents', 'negotiations'];
@@ -10,10 +10,10 @@ echo $quantityActivities . '        ';
 $i = 1;
 
 do {
-    $currentAction = rand(0, 4);     // определяем тип активности
-    $currentEmployeeId = rand(0, 17);// для каждой активности делаем следующее:
+    $currentAction = rand(0, 4);
+    $currentEmployeeId = rand(0, 17);
 
-    $currentCreatedAt = rand(1388520000, 1420059600);  // начала активности - метка юникс-тайм
+    $currentCreatedAt = rand(1388520000, 1420059600);  
     $hour = (integer)date('G', $currentCreatedAt);
     $dayOfWeek = (integer)date('N', $currentCreatedAt);
     if ($hour < 9 || $hour > 18 || $dayOfWeek == 6 || $dayOfWeek == 7) {
@@ -51,16 +51,3 @@ do {
     }
 } while ($i <= $quantityActivities);
 
-//SELECT `contact_id`, sum(`duration`) `development` FROM `activities` WHERE `action` = 0 group by `contact_id` order by `contact_id`;
-
-
-
-//$sql = 'SELECT `id`, CONCAT(`first_name`, SPACE(1), `last_name`) `name`  FROM `contacts` ORDER BY `id`';
-//$db = new Db();
-//$contacts = $db->dbSelect($sql, [':username' => $_GET['user']]);
-//if (empty($contacts)) {
-//    $arrResult['result'] = false;
-//    $arrResult['message'] = 'Ничего не найдено';
-//} else {
-//    $arrResult = $contacts;
-//}

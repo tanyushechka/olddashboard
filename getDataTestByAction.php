@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/classes/Db.php';
+require_once __DIR__ . '/db/Db.php';
 $db = new Db();
 
 $arrResult = [];
