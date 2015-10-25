@@ -13,7 +13,7 @@ do {
     $currentAction = rand(0, 4);
     $currentEmployeeId = rand(0, 17);
 
-    $currentCreatedAt = rand(1388520000, 1420059600);  
+    $currentCreatedAt = rand(1388520000, 1420059600);
     $hour = (integer)date('G', $currentCreatedAt);
     $dayOfWeek = (integer)date('N', $currentCreatedAt);
     if ($hour < 9 || $hour > 18 || $dayOfWeek == 6 || $dayOfWeek == 7) {

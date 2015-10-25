@@ -17,4 +17,12 @@ foreach ($values as $key => $value) {
     $arrResult['rows'][$key] = ['c' => [0 => ['v' => $value->action], 1 => ['v' => $value->val]]];
 }
 
+//$fileName = __DIR__ . '/getDataTestByAction.json';
+//if (!file_exists($fileName)) {
+//    $res = fopen($fileName, 'a');
+//    fclose($res);
+//}
+//$json = json_encode($arrResult, JSON_UNESCAPED_UNICODE);
+//file_put_contents($fileName, $json);
+
 echo json_encode($arrResult, JSON_UNESCAPED_UNICODE);
